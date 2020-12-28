@@ -1,0 +1,48 @@
+{
+	"segments": {
+    "left" : [
+        {
+          "function": "powerline.segments.i3wm.workspaces"
+        }
+
+  ],
+		"right": [
+      {
+        "function": "powerline.segments.i3wm.mode",
+        "name": "mode"
+      },
+      {
+        "function": "powerline.segments.common.players.spotify",
+        "name": "player",
+        "args": {
+          "format": "{state_symbol} {artist} - {title}",
+          "state_symbols": {
+                       "fallback": "f",
+                       "pause": "\uf04c",
+                       "stop": "\uf04d",
+                       "play": "\uf04b"
+                    }
+        }
+      },
+      {
+        "function": "powerline.segments.common.bat.battery",
+        "priority": 10,
+        "name": "battery",
+        "args": {
+          "online": "\uf0e7"
+        }
+      },
+			{
+				"function": "powerline.segments.common.time.date"
+			},
+			{
+				"function": "powerline.segments.common.time.date",
+				"name": "time",
+				"args": {
+					"format": "%H:%M:%S",
+					"istime": true
+				}
+			}
+		]
+	}
+}
