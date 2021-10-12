@@ -427,6 +427,11 @@ set_from_resource $i3-wm.binding.bluetooth i3-wm.binding.bluetooth b
 set_from_resource $i3-wm.program.bluetooth i3-wm.program.bluetooth gnome-control-center --class=floating_window bluetooth
 bindsym $mod+$i3-wm.binding.bluetooth exec $i3-wm.program.bluetooth
 
+## Modify // Sound Settings // <> s ##
+set_from_resource $i3-wm.binding.sound i3-wm.binding.sound s
+set_from_resource $i3-wm.program.sound i3-wm.program.sound gnome-control-center --class=floating_window sound
+bindsym $mod+$i3-wm.binding.sound exec $i3-wm.program.sound
+
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.binding.files i3-wm.binding.files Shift+n
 set_from_resource $i3-wm.program.files i3-wm.program.files /usr/bin/nautilus --new-window
@@ -716,6 +721,7 @@ assign [class="Teams"] workspace $ws8
 assign [class="Skype"] workspace $ws8
 assign [class="discord"] workspace $ws8
 assign [instance="messenger.com"] workspace $ws8
+assign [instance="twitter.com__home"] workspace $ws8
 # workspace "$ws8" output $secondary_group
 
 assign [instance="mail.google.com__mail_u_0"] workspace $ws7
@@ -740,3 +746,13 @@ exec --no-startup-id /home/fbence/.config/regolith/i3/event_listener.py
 # fix for pdfpc
 for_window [ class="Pdfpc" window_role="presentation" ] move to output left, fullscreen
 for_window [ class="Pdfpc" window_role="presenter" ] move to output primary, fullscreen
+
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_type="dialog"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [class="Gnome-calculator"] floating enable
+
+bindsym $mod+Ctrl+c exec --no-startup-id gnome-calculator

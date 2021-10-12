@@ -32,7 +32,8 @@ Plug 'machakann/vim-sandwich'
 Plug 'machakann/vim-swap'
 " git integration from tpope 
 " (as commandline but :G instead of git, % is current file)
-
+" register viewing 
+Plug 'junegunn/vim-peekaboo'
 
 " ##### GIT #######
 Plug 'tpope/vim-fugitive'
@@ -43,7 +44,9 @@ Plug 'tpope/vim-rhubarb'
 Plug 'sodapopcan/vim-twiggy'
 " commit browser plugin for fugitive
 Plug 'junegunn/gv.vim'
-
+" should be coloring changes by char, but messes up colorscheme
+" Plug 'rickhowe/diffchar.vim'
+Plug 'ferdinandyb/diffchar.vim'
 
 " n_ctrl-x/a work as expected for dates, roman numerals etc.
 Plug 'tpope/vim-speeddating'
@@ -82,6 +85,8 @@ Plug 'einfachtoll/didyoumean'
 " dispatch commands in the background
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-unimpaired'
+" wrap unix commands
+Plug 'tpope/vim-eunuch'
 " asynchronous linting
 Plug 'dense-analysis/ale'
 " LSP implementation
@@ -89,8 +94,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
 " switch between multiple lines and single lines
 Plug 'AndrewRadev/splitjoin.vim'
-" rename files command
-Plug 'danro/rename.vim'
 
 "
 " the below plugins are support for languages
@@ -104,7 +107,7 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'pangloss/vim-javascript'  
 Plug 'othree/html5.vim'
-Plug 'leafOfTree/vim-vue-plugin'
+" Plug 'leafOfTree/vim-vue-plugin'
 Plug 'elzr/vim-json'
 Plug 'jupyter-vim/jupyter-vim'
 " PYTHON
@@ -117,7 +120,8 @@ Plug 'jeetsukumaran/vim-pythonsense'
 '
 
 " this is a theme
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'ferdinandyb/vim', { 'as': 'dracula' }
 call plug#end()
 
 " Do no close buffers when opening new buffer on top
@@ -139,6 +143,8 @@ set ttimeoutlen=100
 " show possibilities when using tab in command mode
 set wildmenu
 
+" 007 will be 008 and not 010 on a ctrl-a
+set nrformats-=octal
 " Helps force plug-ins to load correctly when it is turned back on below.
 filetype off
 
@@ -153,10 +159,13 @@ set modelines=0
 
 " Automatically wrap text that extends beyond the screen length.
 set wrap
-
+" auto hard wrap when typing
+set textwidth=80
+set colorcolumn=+1
 " this makes wrap not break words
 set linebreak
-
+" format paragraph
+nnoremap <leader>q gqap
 
 " Uncomment below to set the max textwidth. Use a value corresponding to the width of your screen.
 " set textwidth=79
@@ -259,7 +268,7 @@ let g:vim_vue_plugin_load_full_syntax = 1
 let g:ale_disable_lsp = 1
 let g:ale_linters = {
 \   'javascript': ['eslint'],
-\	'python': ['pylint']
+\	'python': ['pylint', 'flake8']
 \}
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines','trim_whitespace'],
@@ -306,6 +315,11 @@ let maplocalleader = "\<space>"
 " autosave normally saves on exiting insertmode, which is slow
 let g:auto_save_events = ["WinLeave","BufLeave","CursorHold"]
 
+augroup autosave_insertmode_ft
+    au!
+    au FileType markdown let b:auto_save_events = ["WinLeave","BufLeave","CursorHold","CursorHoldI"]
+augroup END
+
 " US keyboard layout like maps for HUN keyboard
 set langmap=\
             \ő[,
@@ -331,6 +345,8 @@ nmap úq :cnext<cr>
 nmap őq :cprev<cr>
 nmap őQ :cfirst<cr>
 nmap úQ :clast<cr>
+nmap <C-w>ő :vert winc ]<cr>
+nmap <C-w><C-ő> :vert winc ]<cr>
 
 " set nolangremap
 nmap gü <Plug>(swap-prev)
@@ -373,6 +389,7 @@ noremap <leader>fr :FzfRg<cr>
 noremap <leader>fm :FzfMarks<cr>
 noremap <leader>fl :FzfLines<cr>
 noremap <leader>fw :FzfWindows<cr>
+nnoremap <leader>fc :call vimtex#fzf#run()<cr>
 
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
@@ -396,13 +413,18 @@ nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 inoremap <C-h> <Left>
 inoremap <C-j> <Down>
-inoremap <C-k> <Up>
+" inoremap <C-k> <Up> " conflict with C-k digraph
 inoremap <C-l> <Right>
 cnoremap <C-h> <Left>
 cnoremap <C-j> <Down>
 cnoremap <C-k> <Up>
 cnoremap <C-l> <Right>
 
+" imap <C-i> <Esc>saiW_Wi
+" imap <C-b> <Esc>saiW*.Whi
+" most editors will have these for bold and italic
+imap <C-i> <Esc>saiW_Wa
+imap <C-b> <Esc>saiW*.Wa
 
 " Vim's auto indentation feature does not work properly with text copied from outside of Vim. Press the <F2> key to toggle paste mode on/off.
 set pastetoggle=<F2>
@@ -453,6 +475,8 @@ nmap <leader>lj <Plug>(ale_next_wrap)
 nmap <leader>lk <Plug>(ale_previous_wrap)
 nmap <leader>le <Plug>(ale_next_wrap_error)
 nmap <leader>lr <Plug>(ale_previous_wrap_error)
+
+
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
 if has('nvim-0.4.0') || has('patch-8.2.0750')
@@ -533,5 +557,7 @@ augroup vue
     au!
     au FileType vue setlocal foldmethod=expr
 augroup END
+
+" sets the title to the open buffer, useful for tmux pane search
 set title
 set titlestring=%(%m%)%(%{expand(\"%:~\")}%)

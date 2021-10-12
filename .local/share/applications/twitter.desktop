@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Twitter
+Comment=Twitter as a Chrome app
+Exec=/opt/google/chrome/chrome --app=https://www.twitter.com/home
+Icon=twitter
+Terminal=false
+StartupWMClass=TwitterDesktop
+Type=Application
